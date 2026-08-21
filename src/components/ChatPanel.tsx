@@ -303,10 +303,10 @@ export default function ChatPanel() {
   }, [selectedConversation, user]);
 
   return (
-    <div className='flex h-screen bg-[#f0f2f5]'>
+    <div className='flex h-screen bg-background'>
       <div className='w-80 flex-shrink-0 bg-white border-r border-gray-200'>
         <div className='flex flex-col h-full'>
-          <div className='p-4 bg-[#00a884] text-white'>
+          <div className='p-4 bg-primary text-white'>
             <div className='flex items-center justify-between mb-4'>
               <h2 className='text-xl font-semibold'>Messages</h2>
               <div className='flex gap-2'>
@@ -349,7 +349,7 @@ export default function ChatPanel() {
                   handleSearch(e.target.value);
                 }}
                 onFocus={() => searchQuery && dispatch(setShowSearch(true))}
-                className='w-full px-4 py-2 pl-10 bg-white rounded-lg text-sm text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-white/50 focus:outline-none'
+                className='w-full px-4 py-2 pl-10 bg-white rounded-lg text-sm text-gray-900 placeholder-gray-500 focus:ring focus:ring-white/50 focus:outline-none'
               />
               <svg
                 className='w-4 h-4 text-gray-400 absolute left-3 top-2.5'
@@ -366,7 +366,7 @@ export default function ChatPanel() {
               </svg>
               {isSearching && (
                 <div className='absolute right-3 top-2.5'>
-                  <div className='w-4 h-4 border-2 border-[#00a884] border-t-transparent rounded-full animate-spin' />
+                  <div className='w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin' />
                 </div>
               )}
             </div>
@@ -411,7 +411,7 @@ export default function ChatPanel() {
                   key={conv._id}
                   onClick={() => handleSelectConversation(conv)}
                   className={`w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 transition ${
-                    selectedConversation?._id === conv._id ? "bg-[#f0f2f5]" : ""
+                    selectedConversation?._id === conv._id ? "bg-background" : ""
                   }`}
                 >
                   <div className='flex items-start gap-3'>
@@ -452,10 +452,10 @@ export default function ChatPanel() {
         </div>
       </div>
 
-      <div className='flex-1 flex flex-col bg-[#e5ddd5]'>
+      <div className='flex-1 flex flex-col bg-chat-bg'>
         {selectedConversation ? (
           <>
-            <div className='bg-[#f0f2f5] border-b border-gray-200 px-6 py-3'>
+            <div className='bg-background border-b border-gray-200 px-6 py-3'>
               <div className='flex items-center gap-3'>
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${
@@ -500,7 +500,7 @@ export default function ChatPanel() {
             <MessageInput onSend={handleSendMessage} disabled={false} />
           </>
         ) : (
-          <div className='flex-1 flex items-center justify-center bg-[#f0f2f5]'>
+          <div className='flex-1 flex items-center justify-center bg-background'>
             <div className='text-center text-gray-500'>
               <div className='w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm'>
                 <svg
@@ -517,9 +517,9 @@ export default function ChatPanel() {
                   />
                 </svg>
               </div>
-              <h3 className='text-lg font-medium mb-2 text-gray-700'>ChatApp Web</h3>
+              <h3 className='text-lg font-medium mb-2 text-gray-700'>ChatWithMe Web</h3>
               <p className='text-sm text-gray-500 max-w-sm mx-auto'>
-                Send and receive messages without keeping your phone online. Use ChatApp on up to 4 linked
+                Send and receive messages without keeping your phone online. Use ChatWithMe on up to 4 linked
                 devices and 1 mobile phone.
               </p>
             </div>
@@ -537,7 +537,7 @@ export default function ChatPanel() {
                 onClick={() => dispatch(setNewConvType("direct"))}
                 className={`flex-1 py-2 px-4 rounded-md border transition ${
                   newConvType === "direct"
-                    ? "bg-[#00a884] border-[#00a884] text-white"
+                    ? "bg-primary border-primary text-white"
                     : "border-gray-300 hover:bg-gray-50"
                 }`}
               >
@@ -547,7 +547,7 @@ export default function ChatPanel() {
                 onClick={() => dispatch(setNewConvType("group"))}
                 className={`flex-1 py-2 px-4 rounded-md border transition ${
                   newConvType === "group"
-                    ? "bg-[#00a884] border-[#00a884] text-white"
+                    ? "bg-primary border-primary text-white"
                     : "border-gray-300 hover:bg-gray-50"
                 }`}
               >
@@ -562,7 +562,7 @@ export default function ChatPanel() {
                   type='text'
                   value={selectedUserId}
                   onChange={(e) => dispatch(setSelectedUserId(e.target.value))}
-                  className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#00a884] outline-none'
+                  className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-primary outline-none'
                   placeholder='Enter user ID'
                 />
               </div>
@@ -574,7 +574,7 @@ export default function ChatPanel() {
                     type='text'
                     value={groupName}
                     onChange={(e) => dispatch(setGroupName(e.target.value))}
-                    className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#00a884] outline-none'
+                    className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-primary outline-none'
                     placeholder='Enter group name'
                   />
                 </div>
@@ -586,7 +586,7 @@ export default function ChatPanel() {
                     type='text'
                     value={selectedUserId}
                     onChange={(e) => dispatch(setSelectedUserId(e.target.value))}
-                    className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#00a884] outline-none'
+                    className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-primary outline-none'
                     placeholder='user1, user2, user3'
                   />
                 </div>
@@ -603,7 +603,7 @@ export default function ChatPanel() {
               <button
                 onClick={handleCreateConversation}
                 disabled={isCreating || !selectedUserId}
-                className='px-4 py-2 bg-[#00a884] text-white rounded-md hover:bg-[#008f72] disabled:bg-gray-300 disabled:cursor-not-allowed transition'
+                className='px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark disabled:bg-gray-300 disabled:cursor-not-allowed transition'
               >
                 {isCreating ? "Creating..." : "Create"}
               </button>

@@ -1,6 +1,6 @@
+import { ReduxProvider } from "@/store/ReduxProvider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ReduxProvider } from "@/store/ReduxProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,24 +14,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ChatApp - Modern Messaging",
-  description: "Connect instantly, chat seamlessly with ChatApp",
+  title: "ChatWithMe - Modern Messaging",
+  description: "Connect instantly, chat seamlessly with ChatWithMe",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-    >
-      <body className="min-h-screen flex flex-col">
-        <ReduxProvider>
-          {children}
-        </ReduxProvider>
+    <html lang='en' className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className='min-h-screen flex flex-col'>
+        <ReduxProvider>{children}</ReduxProvider>
       </body>
     </html>
   );

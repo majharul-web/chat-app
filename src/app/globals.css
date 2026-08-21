@@ -17,6 +17,15 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-chat-bg: var(--chat-bg);
+  --color-message-out: var(--message-out);
+  --color-message-in: var(--message-in);
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-border: var(--border);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

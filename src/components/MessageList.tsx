@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useMemo, useCallback, useLayoutEffect } from 'react';
 import { Message } from '@/types';
+import { formatDate, formatTime, getInitials, isSameGroup, shouldShowAvatar } from '@/lib/utils';
 
 interface MessageListProps {
   messages: Message[];
@@ -10,30 +11,6 @@ interface MessageListProps {
   hasMore: boolean;
   onLoadMore: () => void;
   participants?: Record<string, { name?: string; phone?: string }>;
-}
-
-function getInitials(name?: string, phone?: string) {
-  const source = name || phone || '?';
-  const parts = source.trim().split(' ');
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[1][0]).toUpperCase();
-  }
-  return source.slice(0, 2).toUpperCase();
-}
-
-function shouldShowAvatar(messages: Message[], index: number) {
-  if (index === messages.length - 1) return true;
-  const next = messages[index + 1];
-  return next.sender !== messages[index].sender || 
-    new Date(next.createdAt).getTime() - new Date(messages[index].createdAt).getTime() > 60 * 1000;
-}
-
-function isSameGroup(messages: Message[], index: number) {
-  if (index === 0) return false;
-  const prev = messages[index - 1];
-  const current = messages[index];
-  return prev.sender === current.sender && 
-    new Date(current.createdAt).getTime() - new Date(prev.createdAt).getTime() <= 60 * 1000;
 }
 
 export default function MessageList({
@@ -115,26 +92,6 @@ export default function MessageList({
     prevFirstId.current = messages[0]?._id;
   }, [messages, isLoading, scrollToBottom]);
 
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    if (date.toDateString() === today.toDateString()) {
-      return 'Today';
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return 'Yesterday';
-    } else {
-      return date.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
-    }
-  };
-
   const groupedMessages = useMemo(() => {
     const sorted = [...messages].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
     const groups: { date: string; messages: Message[] }[] = [];
@@ -160,12 +117,12 @@ export default function MessageList({
   };
 
   return (
-    <div 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       className="flex-1 overflow-y-auto p-4"
       style={{
         backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23d4d2cf\' fill-opacity=\'0.15\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
-        backgroundColor: '#e5ddd5'
+        backgroundColor: 'var(--chat-bg)',
       }}
     >
       {hasMore && (
@@ -173,7 +130,7 @@ export default function MessageList({
           <button
             onClick={onLoadMore}
             disabled={isLoading}
-            className="text-sm text-[#00a884] hover:text-[#008f72] disabled:text-gray-400 transition"
+            className="text-sm text-primary hover:text-primary-dark disabled:text-gray-400 transition"
           >
             {isLoading ? 'Loading...' : 'Load older messages'}
           </button>
@@ -219,8 +176,8 @@ export default function MessageList({
                     <div
                       className={`px-3 py-2 shadow-sm ${
                         isCurrentUser
-                          ? 'bg-[#d9fdd3] text-gray-900 rounded-2xl rounded-tr-sm'
-                          : 'bg-white text-gray-900 rounded-2xl rounded-tl-sm border border-gray-100'
+                          ? 'bg-message-out text-gray-900 rounded-2xl rounded-tr-sm'
+                          : 'bg-message-in text-gray-900 rounded-2xl rounded-tl-sm border border-gray-100'
                       }`}
                     >
                       <p className="text-sm break-words leading-relaxed">{message.text}</p>

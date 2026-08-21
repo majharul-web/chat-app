@@ -1,6 +1,7 @@
-# ChatApp API Documentation
+# ChatWithMe API Documentation
 
 ## Base URL
+
 ```
 https://frontend-task-chatapp.onrender.com
 ```
@@ -8,6 +9,7 @@ https://frontend-task-chatapp.onrender.com
 ## Authentication
 
 All protected endpoints require a Bearer token in the Authorization header:
+
 ```
 Authorization: Bearer <token>
 ```
@@ -23,6 +25,7 @@ Authorization: Bearer <token>
 Registers a new user or logs in an existing user. There is no separate registration flow.
 
 **Request Body:**
+
 ```json
 {
   "phone": "string (required)",
@@ -31,6 +34,7 @@ Registers a new user or logs in an existing user. There is no separate registrat
 ```
 
 **Response 200 OK:**
+
 ```json
 {
   "token": "string (JWT token)",
@@ -44,6 +48,7 @@ Registers a new user or logs in an existing user. There is no separate registrat
 ```
 
 **Error Response:**
+
 ```json
 {
   "message": "Validation failed",
@@ -66,11 +71,13 @@ Registers a new user or logs in an existing user. There is no separate registrat
 Returns the currently authenticated user's profile.
 
 **Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Response 200 OK:**
+
 ```json
 {
   "_id": "string",
@@ -89,14 +96,17 @@ Authorization: Bearer <token>
 Searches for users by name or phone number.
 
 **Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Query Parameters:**
+
 - `q` (string, required): Search query
 
 **Response 200 OK:**
+
 ```json
 [
   {
@@ -116,14 +126,17 @@ Authorization: Bearer <token>
 Returns all conversations for the current user.
 
 **Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Query Parameters:**
+
 - `type` (string, optional): Filter by conversation type (`direct` or `group`)
 
 **Response 200 OK:**
+
 ```json
 {
   "data": [
@@ -155,12 +168,14 @@ Authorization: Bearer <token>
 Creates a new conversation (direct or group).
 
 **Headers:**
+
 ```
 Authorization: Bearer <token>
 Content-Type: application/json
 ```
 
 **Request Body:**
+
 ```json
 {
   "userId": "string (required)",
@@ -170,6 +185,7 @@ Content-Type: application/json
 ```
 
 **Response 201 Created:**
+
 ```json
 {
   "_id": "string",
@@ -187,11 +203,13 @@ Content-Type: application/json
 Returns messages for a specific conversation.
 
 **Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Response 200 OK:**
+
 ```json
 {
   "messages": [
@@ -216,12 +234,14 @@ Authorization: Bearer <token>
 Sends a new message to a conversation.
 
 **Headers:**
+
 ```
 Authorization: Bearer <token>
 Content-Type: application/json
 ```
 
 **Request Body:**
+
 ```json
 {
   "conversationId": "string (required)",
@@ -230,6 +250,7 @@ Content-Type: application/json
 ```
 
 **Response 201 Created:**
+
 ```json
 {
   "_id": "string",
@@ -249,25 +270,27 @@ Connect to the Socket.IO server for real-time updates:
 **URL:** `wss://frontend-task-chatapp.onrender.com/socket.io/`
 
 **Authentication:**
+
 ```javascript
-const socket = io('wss://frontend-task-chatapp.onrender.com', {
+const socket = io("wss://frontend-task-chatapp.onrender.com", {
   auth: {
-    token: 'Bearer <jwt_token>'
-  }
+    token: "Bearer <jwt_token>",
+  },
 });
 ```
 
 **Events:**
 
-| Event | Direction | Payload | Description |
-|-------|-----------|---------|-------------|
-| `connect` | Server → Client | - | Connection established |
-| `disconnect` | Server → Client | - | Connection closed |
-| `message:received` | Server → Client | `Message` object | New message received in real-time |
-| `conversation:join` | Client → Server | `conversationId: string` | Join a conversation room |
-| `conversation:leave` | Client → Server | `conversationId: string` | Leave a conversation room |
+| Event                | Direction       | Payload                  | Description                       |
+| -------------------- | --------------- | ------------------------ | --------------------------------- |
+| `connect`            | Server → Client | -                        | Connection established            |
+| `disconnect`         | Server → Client | -                        | Connection closed                 |
+| `message:received`   | Server → Client | `Message` object         | New message received in real-time |
+| `conversation:join`  | Client → Server | `conversationId: string` | Join a conversation room          |
+| `conversation:leave` | Client → Server | `conversationId: string` | Leave a conversation room         |
 
 **Message Object:**
+
 ```json
 {
   "_id": "string",
@@ -282,12 +305,12 @@ const socket = io('wss://frontend-task-chatapp.onrender.com', {
 
 ## Error Codes
 
-| Code | Description |
-|------|-------------|
-| `VALIDATION_ERROR` | Request validation failed |
-| `NOT_FOUND` | Resource not found |
-| `NO_TOKEN` | Authorization token missing |
-| `INVALID_TOKEN` | Authorization token invalid |
+| Code               | Description                 |
+| ------------------ | --------------------------- |
+| `VALIDATION_ERROR` | Request validation failed   |
+| `NOT_FOUND`        | Resource not found          |
+| `NO_TOKEN`         | Authorization token missing |
+| `INVALID_TOKEN`    | Authorization token invalid |
 
 ---
 

@@ -1,4 +1,4 @@
-# ChatApp - Frontend Developer Take-Home Assignment
+# ChatWithMe - Frontend Developer Take-Home Assignment
 
 A modern chat application built with Next.js 16, featuring real-time messaging, group conversations, and a beautiful landing page.
 
@@ -14,6 +14,7 @@ A modern chat application built with Next.js 16, featuring real-time messaging, 
 ## Features
 
 ### Part 1: Chat Application
+
 - **Login / Registration:** Phone number + name login with automatic user registration
 - **Conversation List:** View all conversations with search functionality
 - **Direct Messages:** One-to-one conversations with other users
@@ -25,6 +26,7 @@ A modern chat application built with Next.js 16, featuring real-time messaging, 
 - **Responsive Design:** Works on desktop and mobile
 
 ### Part 2: Landing Page
+
 - Modern, clean design with gradient backgrounds
 - Feature highlights showcasing the chat capabilities
 - Interactive mock chat preview
@@ -34,6 +36,7 @@ A modern chat application built with Next.js 16, featuring real-time messaging, 
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
 - npm or yarn
 
@@ -116,6 +119,7 @@ NEXT_PUBLIC_SOCKET_URL=https://frontend-task-chatapp.onrender.com
 ## Deployment
 
 This app is ready to deploy on:
+
 - Vercel (recommended)
 - Netlify
 - Any platform supporting Next.js
@@ -131,6 +135,7 @@ For styling, I used Tailwind CSS v4, which provides a utility-first approach tha
 For state management and API calls, I used Redux Toolkit with RTK Query. RTK Query handles authentication headers, caching, polling, refetching on focus/reconnect, and tag-based invalidation out of the box. This removes the need for manual fetch wrappers, local loading flags, and ad-hoc caching. For real-time communication, I integrated Socket.IO client, which is the standard for WebSocket connections in the React ecosystem.
 
 **Trade-offs considered:**
+
 - I moved away from React Context + local state for auth and chat data in favor of Redux Toolkit + RTK Query. This makes the app more scalable, keeps API logic centralized, and simplifies cross-component state sharing without prop drilling.
 - I could have used a UI component library like shadcn/ui or MUI, but building custom components gives more control over the chat-specific UI and reduces dependencies.
 - For the Socket.IO connection, I implemented a custom hook (`useSocket`) rather than using a library, which gives us full control over the connection lifecycle and event handling.
@@ -138,6 +143,7 @@ For state management and API calls, I used Redux Toolkit with RTK Query. RTK Que
 ### Design Choices (Landing Page)
 
 For the landing page, I wanted to create something that feels modern and premium while clearly communicating the app's value proposition. I used:
+
 - A blue and purple gradient color scheme that conveys trust and modernity
 - Clean typography with the Geist font family
 - Feature cards with subtle hover animations
@@ -149,6 +155,7 @@ The design avoids generic templates by using custom SVG icons, unique color comb
 ### AI Tool Usage
 
 I used AI tools (Claude Code / Kilo) for:
+
 - **Boilerplate generation:** The initial Next.js project setup and file structure
 - **API exploration:** Systematic probing of the backend API endpoints to discover the available routes and their parameters
 - **Code review:** Reviewing generated code for TypeScript errors and best practices
@@ -199,4 +206,4 @@ While building this, I was reminded of a trip to Madagascar where connectivity w
 
 ---
 
-*Note: This project was built as part of a take-home assignment. The backend API is hosted on Render and may experience cold starts on first request.*
+_Note: This project was built as part of a take-home assignment. The backend API is hosted on Render and may experience cold starts on first request._
