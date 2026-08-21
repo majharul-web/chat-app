@@ -7,6 +7,7 @@ A modern chat application built with Next.js 16, featuring real-time messaging, 
 - **Framework:** Next.js 16 (App Router)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS v4
+- **State Management:** Redux Toolkit + RTK Query
 - **Real-time:** Socket.IO Client
 - **Deployment:** Ready for Vercel/Netlify
 
@@ -84,12 +85,19 @@ src/
 │   ├── MessageInput.tsx
 │   ├── MessageList.tsx
 │   └── NewConversationModal.tsx
-├── contexts/
-│   └── AuthContext.tsx
 ├── hooks/
 │   └── useSocket.ts
-└── lib/
-    └── api.ts
+├── store/
+│   ├── api/
+│   │   └── chatApi.ts
+│   ├── slices/
+│   │   ├── authSlice.ts
+│   │   └── chatSlice.ts
+│   ├── ReduxProvider.tsx
+│   ├── hooks.ts
+│   └── index.ts
+├── types/
+│   └── index.ts
 ```
 
 ## API Documentation
@@ -120,10 +128,10 @@ I chose Next.js 16 with the App Router for this project because it provides the 
 
 For styling, I used Tailwind CSS v4, which provides a utility-first approach that allows for rapid UI development and consistent design. This is especially valuable for a chat application where there are many repeated UI patterns (message bubbles, avatars, buttons).
 
-I used the native `fetch` API for HTTP requests instead of adding an additional library like Axios. This keeps the bundle size small and leverages the built-in Request/Response APIs available in Next.js 16. For real-time communication, I integrated Socket.IO client, which is the standard for WebSocket connections in the React ecosystem.
+For state management and API calls, I used Redux Toolkit with RTK Query. RTK Query handles authentication headers, caching, polling, refetching on focus/reconnect, and tag-based invalidation out of the box. This removes the need for manual fetch wrappers, local loading flags, and ad-hoc caching. For real-time communication, I integrated Socket.IO client, which is the standard for WebSocket connections in the React ecosystem.
 
 **Trade-offs considered:**
-- I considered using a state management library like Zustand or Redux, but for this application, React Context + local state was sufficient and keeps the code simpler.
+- I moved away from React Context + local state for auth and chat data in favor of Redux Toolkit + RTK Query. This makes the app more scalable, keeps API logic centralized, and simplifies cross-component state sharing without prop drilling.
 - I could have used a UI component library like shadcn/ui or MUI, but building custom components gives more control over the chat-specific UI and reduces dependencies.
 - For the Socket.IO connection, I implemented a custom hook (`useSocket`) rather than using a library, which gives us full control over the connection lifecycle and event handling.
 
