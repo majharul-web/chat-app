@@ -155,7 +155,7 @@ export default function Home() {
                 </div>
               </div>
               <div className='bg-white rounded-xl shadow-sm border border-gray-200 p-4 ml-8'>
-                <div className='bg-[#d9fdd3] rounded-lg p-3 text-sm text-gray-900'>
+                <div className='bg-message-out rounded-lg p-3 text-sm text-gray-900'>
                   I&apos;m great, thanks for asking! 🎉
                 </div>
               </div>
@@ -171,7 +171,7 @@ export default function Home() {
           </p>
           <a
             href='/chat/login'
-            className='inline-block bg-[#00a884] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#008f72] transition shadow-lg shadow-[#00a884]/20'
+            className='inline-block bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary-dark transition shadow-lg shadow-primary/20'
           >
             Start Chatting Now
           </a>
