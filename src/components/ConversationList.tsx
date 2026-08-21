@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { Conversation, User } from '@/lib/api';
-import { searchUsers } from '@/lib/api';
+import { Conversation, User } from '@/types';
 
 interface ConversationListProps {
   conversations: Conversation[];
@@ -44,8 +43,11 @@ export default function ConversationList({
     searchTimeoutRef.current = setTimeout(async () => {
       setIsSearching(true);
       try {
-        const users = await searchUsers(token, query);
-        setSearchResults(users.filter(u => u._id !== currentUserId));
+        const response = await fetch(`/api/users/search?q=${encodeURIComponent(query)}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await response.json();
+        setSearchResults(data.filter((u: User) => u._id !== currentUserId));
         setShowSearch(true);
       } catch (error) {
         console.error('Search failed:', error);
