@@ -13,7 +13,7 @@ interface ChatState {
   showSearch: boolean;
   showNewConversation: boolean;
   newConvType: 'direct' | 'group';
-  selectedUserId: string;
+  modalSelectedUsers: User[];
   groupName: string;
   isCreating: boolean;
   isConnected: boolean;
@@ -31,7 +31,7 @@ const initialState: ChatState = {
   showSearch: false,
   showNewConversation: false,
   newConvType: 'direct',
-  selectedUserId: '',
+  modalSelectedUsers: [],
   groupName: '',
   isCreating: false,
   isConnected: false,
@@ -87,8 +87,8 @@ const chatSlice = createSlice({
     setNewConvType: (state, action: PayloadAction<'direct' | 'group'>) => {
       state.newConvType = action.payload;
     },
-    setSelectedUserId: (state, action: PayloadAction<string>) => {
-      state.selectedUserId = action.payload;
+    setModalSelectedUsers: (state, action: PayloadAction<User[]>) => {
+      state.modalSelectedUsers = action.payload;
     },
     setGroupName: (state, action: PayloadAction<string>) => {
       state.groupName = action.payload;
@@ -107,7 +107,7 @@ const chatSlice = createSlice({
       state.searchResults = [];
       state.showSearch = false;
       state.showNewConversation = false;
-      state.selectedUserId = '';
+      state.modalSelectedUsers = [];
       state.groupName = '';
       state.isCreating = false;
     },
@@ -128,7 +128,7 @@ export const {
   setShowSearch,
   setShowNewConversation,
   setNewConvType,
-  setSelectedUserId,
+  setModalSelectedUsers,
   setGroupName,
   setIsCreating,
   setConnected,

@@ -2,6 +2,7 @@
 
 import MessageInput from "@/components/MessageInput";
 import MessageList from "@/components/MessageList";
+import UserSearchModal from "@/components/UserSearchModal";
 import { useSocket } from "@/hooks/useSocket";
 import {
   useCreateConversationMutation,
@@ -20,10 +21,10 @@ import {
   setGroupName,
   setIsCreating,
   setMessages,
+  setModalSelectedUsers,
   setNewConvType,
   setSearchResults,
   setSelectedConversation,
-  setSelectedUserId,
   setShowNewConversation,
   setShowSearch,
 } from "@/store/slices/chatSlice";
@@ -43,7 +44,7 @@ export default function ChatPanel() {
     error,
     showNewConversation,
     newConvType,
-    selectedUserId,
+    modalSelectedUsers,
     groupName,
     isCreating,
     isSearching,
@@ -167,14 +168,15 @@ export default function ChatPanel() {
   };
 
   const handleCreateConversation = async () => {
-    if (!selectedUserId) return;
+    if (modalSelectedUsers.length === 0) return;
 
     dispatch(setIsCreating(true));
     dispatch(clearError());
 
     try {
+      const userId = newConvType === 'direct' ? modalSelectedUsers[0]._id : modalSelectedUsers[0]._id;
       const conversation = await createConversationMutation({
-        userId: selectedUserId,
+        userId,
         type: newConvType,
         name: newConvType === "group" ? groupName : undefined,
       }).unwrap();
@@ -182,7 +184,7 @@ export default function ChatPanel() {
       dispatch(setConversations([conversation, ...conversations]));
       dispatch(setSelectedConversation(conversation));
       dispatch(setShowNewConversation(false));
-      dispatch(setSelectedUserId(""));
+      dispatch(setModalSelectedUsers([]));
       dispatch(setGroupName(""));
     } catch (err) {
       dispatch(setError(err instanceof Error ? err.message : "Failed to create conversation"));
@@ -218,7 +220,6 @@ export default function ChatPanel() {
 
   const handleUserClick = async (user: User) => {
     dispatch(setShowSearch(false));
-    dispatch(setSelectedUserId(""));
 
     const existing = conversations.find((c) => c.participant?._id === user._id);
     if (existing) {
@@ -528,88 +529,22 @@ export default function ChatPanel() {
       </div>
 
       {showNewConversation && (
-        <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm'>
-          <div className='bg-white rounded-lg p-6 w-full max-w-md shadow-2xl'>
-            <h3 className='text-lg font-semibold mb-4 text-gray-900'>New Conversation</h3>
-
-            <div className='flex gap-2 mb-4'>
-              <button
-                onClick={() => dispatch(setNewConvType("direct"))}
-                className={`flex-1 py-2 px-4 rounded-md border transition ${
-                  newConvType === "direct"
-                    ? "bg-primary border-primary text-white"
-                    : "border-gray-300 hover:bg-gray-50"
-                }`}
-              >
-                Direct Message
-              </button>
-              <button
-                onClick={() => dispatch(setNewConvType("group"))}
-                className={`flex-1 py-2 px-4 rounded-md border transition ${
-                  newConvType === "group"
-                    ? "bg-primary border-primary text-white"
-                    : "border-gray-300 hover:bg-gray-50"
-                }`}
-              >
-                Group
-              </button>
-            </div>
-
-            {newConvType === "direct" ? (
-              <div className='mb-4'>
-                <label className='block text-sm font-medium text-gray-700 mb-1'>User ID</label>
-                <input
-                  type='text'
-                  value={selectedUserId}
-                  onChange={(e) => dispatch(setSelectedUserId(e.target.value))}
-                  className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-primary outline-none'
-                  placeholder='Enter user ID'
-                />
-              </div>
-            ) : (
-              <>
-                <div className='mb-4'>
-                  <label className='block text-sm font-medium text-gray-700 mb-1'>Group Name</label>
-                  <input
-                    type='text'
-                    value={groupName}
-                    onChange={(e) => dispatch(setGroupName(e.target.value))}
-                    className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-primary outline-none'
-                    placeholder='Enter group name'
-                  />
-                </div>
-                <div className='mb-4'>
-                  <label className='block text-sm font-medium text-gray-700 mb-1'>
-                    Participant User IDs (comma-separated)
-                  </label>
-                  <input
-                    type='text'
-                    value={selectedUserId}
-                    onChange={(e) => dispatch(setSelectedUserId(e.target.value))}
-                    className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-primary outline-none'
-                    placeholder='user1, user2, user3'
-                  />
-                </div>
-              </>
-            )}
-
-            <div className='flex gap-2 justify-end'>
-              <button
-                onClick={() => dispatch(setShowNewConversation(false))}
-                className='px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition'
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleCreateConversation}
-                disabled={isCreating || !selectedUserId}
-                className='px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark disabled:bg-gray-300 disabled:cursor-not-allowed transition'
-              >
-                {isCreating ? "Creating..." : "Create"}
-              </button>
-            </div>
-          </div>
-        </div>
+        <UserSearchModal
+          isOpen={showNewConversation}
+          onClose={() => dispatch(setShowNewConversation(false))}
+          token={token}
+          currentUserId={user?._id ?? undefined}
+          selectedUsers={modalSelectedUsers}
+          onSelect={(users) => dispatch(setModalSelectedUsers(users))}
+          convType={newConvType}
+          onConvTypeChange={(type) => dispatch(setNewConvType(type))}
+          groupName={groupName}
+          onGroupNameChange={(name) => dispatch(setGroupName(name))}
+          title='New Conversation'
+          submitLabel={newConvType === 'direct' ? 'Start Chat' : 'Create Group'}
+          onSubmit={handleCreateConversation}
+          isSubmitting={isCreating}
+        />
       )}
 
       {error && (
