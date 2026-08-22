@@ -242,8 +242,8 @@ export default function ChatPanel() {
     };
 
     if (showSearch) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [showSearch, dispatch]);
 
@@ -313,7 +313,7 @@ export default function ChatPanel() {
               <div className='flex gap-2'>
                 <button
                   onClick={() => dispatch(setShowNewConversation(true))}
-                  className='p-2 hover:bg-white/20 rounded-full transition'
+                  className='p-2 hover:bg-white/20 rounded-full transition cursor-pointer'
                   title='New Conversation'
                 >
                   <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
@@ -325,7 +325,7 @@ export default function ChatPanel() {
                     dispatch(logoutAuth());
                     router.push("/chat/login");
                   }}
-                  className='p-2 hover:bg-white/20 rounded-full transition'
+                  className='p-2 hover:bg-white/20 rounded-full transition cursor-pointer'
                   title='Logout'
                 >
                   <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
@@ -343,7 +343,7 @@ export default function ChatPanel() {
             {user && (
               <button
                 onClick={() => setIsProfileOpen(true)}
-                className='w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/20 transition text-left'
+                className='w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/20 transition text-left cursor-pointer'
               >
                 <div
                   className={`w-10 h-10 rounded-full ${getAvatarColor(user._id)} flex items-center justify-center text-white font-semibold flex-shrink-0`}
@@ -395,7 +395,7 @@ export default function ChatPanel() {
                   <button
                     key={user._id}
                     onClick={() => handleUserClick(user)}
-                    className='w-full px-3 py-2.5 text-left hover:bg-gray-50 transition flex items-center gap-3'
+                    className='w-full px-3 py-2.5 text-left hover:bg-gray-50 transition flex items-center gap-3 cursor-pointer'
                   >
                     <div
                       className={`w-9 h-9 rounded-full ${getAvatarColor(user._id)} flex items-center justify-center text-white text-sm font-semibold flex-shrink-0`}
@@ -435,7 +435,7 @@ export default function ChatPanel() {
                 <button
                   key={conv._id}
                   onClick={() => handleSelectConversation(conv)}
-                  className={`w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 transition ${
+                  className={`w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 transition cursor-pointer ${
                     selectedConversation?._id === conv._id ? "bg-background" : ""
                   }`}
                 >
@@ -516,7 +516,7 @@ export default function ChatPanel() {
                     {selectedConversation.type === "group" ? (
                       <button
                         onClick={() => setShowGroupMembers(true)}
-                        className='hover:text-primary transition'
+                        className='hover:text-primary transition cursor-pointer'
                       >
                         {selectedConversation.participants?.length || 0} participants
                       </button>
@@ -555,7 +555,9 @@ export default function ChatPanel() {
                   />
                 </svg>
               </div>
-              <h3 className='text-lg font-medium mb-2 text-gray-700'>ChatWithMe Web</h3>
+              <h3 className='text-lg font-medium mb-2'>
+                <span className='text-primary'>ChatWithMe</span> Web
+              </h3>
               <p className='text-sm text-gray-500 max-w-sm mx-auto'>
                 Send and receive messages without keeping your phone online. Use ChatWithMe on up to 4 linked
                 devices and 1 mobile phone.
@@ -600,7 +602,10 @@ export default function ChatPanel() {
       {error && (
         <div className='fixed bottom-4 right-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md shadow-lg z-50'>
           {error}
-          <button onClick={() => dispatch(setError(null))} className='ml-3 text-red-500 hover:text-red-700'>
+          <button
+            onClick={() => dispatch(setError(null))}
+            className='ml-3 text-red-500 hover:text-red-700 cursor-pointer'
+          >
             ×
           </button>
         </div>

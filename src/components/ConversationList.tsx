@@ -108,7 +108,7 @@ export default function ConversationList({
           <div className='flex gap-2'>
             <button
               onClick={onNewConversation}
-              className='p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition'
+              className='p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition cursor-pointer'
               title='New Conversation'
             >
               <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
@@ -117,7 +117,7 @@ export default function ConversationList({
             </button>
             <button
               onClick={onLogout}
-              className='p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-full transition'
+              className='p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-full transition cursor-pointer'
               title='Logout'
             >
               <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
@@ -167,7 +167,7 @@ export default function ConversationList({
               <button
                 key={user._id}
                 onClick={() => handleUserClick(user)}
-                className='w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition'
+                className='w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition cursor-pointer'
               >
                 <div className='font-medium text-gray-900'>{user.name}</div>
                 <div className='text-sm text-gray-500'>{user.phone}</div>
@@ -188,7 +188,7 @@ export default function ConversationList({
             <button
               key={conv._id}
               onClick={() => onSelect(conv)}
-              className={`group w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 transition ${
+              className={`group w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 transition cursor-pointer ${
                 selectedId === conv._id ? "bg-blue-50" : ""
               }`}
             >

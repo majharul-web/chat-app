@@ -131,7 +131,7 @@ export default function MessageList({
           <button
             onClick={onLoadMore}
             disabled={isLoading}
-            className='text-sm text-primary hover:text-primary-dark disabled:text-gray-400 transition'
+            className='text-sm text-primary hover:text-primary-dark disabled:text-gray-400 transition cursor-pointer'
           >
             {isLoading ? "Loading..." : "Load older messages"}
           </button>

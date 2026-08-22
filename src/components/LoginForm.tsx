@@ -61,7 +61,9 @@ export default function LoginForm({ onLogin, isLoading, error }: LoginFormProps)
               />
             </svg>
           </div>
-          <h1 className='text-2xl font-bold text-gray-900 mb-2'>Welcome to ChatWithMe</h1>
+          <h1 className='text-2xl font-bold text-gray-900 mb-2'>
+            Welcome to <span className='text-primary'>ChatWithMe</span>
+          </h1>
           <p className='text-gray-600'>Enter your phone number and name to log in</p>
         </div>
 
@@ -109,7 +111,7 @@ export default function LoginForm({ onLogin, isLoading, error }: LoginFormProps)
           <button
             type='submit'
             disabled={isLoading}
-            className='w-full bg-primary text-white py-2.5 px-4 rounded-lg hover:bg-primary-dark disabled:bg-gray-300 disabled:cursor-not-allowed transition font-medium'
+            className='w-full bg-primary text-white py-2.5 px-4 rounded-lg hover:bg-primary-dark disabled:bg-gray-300 disabled:cursor-not-allowed transition font-medium cursor-pointer'
           >
             {isLoading ? "Logging in..." : "Log In"}
           </button>

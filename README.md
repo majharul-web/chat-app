@@ -9,13 +9,13 @@ A modern chat application built with Next.js 16, featuring real-time messaging, 
 - **Styling:** Tailwind CSS v4
 - **State Management:** Redux Toolkit + RTK Query
 - **Real-time:** Socket.IO Client
-- **Deployment:** Ready for Vercel/Netlify
+- **Deployment:** Vercel
 
 ## Features
 
 ### Part 1: Chat Application
 
-- **Login / Registration:** Phone number + name login with automatic user registration
+- **Login / Registration:** Phone number + name login with custom validation
 - **Conversation List:** View all conversations with search functionality
 - **Direct Messages:** One-to-one conversations with other users
 - **Group Conversations:** Create group chats with multiple participants
@@ -24,6 +24,8 @@ A modern chat application built with Next.js 16, featuring real-time messaging, 
 - **Smart Auto-scroll:** Auto-scrolls to new messages only when at the bottom
 - **Loading / Empty / Error States:** Handled appropriately throughout the app
 - **Responsive Design:** Works on desktop and mobile
+- **User Profiles:** View current user profile details
+- **Group Members:** View group participant list
 
 ### Part 2: Landing Page
 
@@ -87,9 +89,14 @@ src/
 │   ├── LoginForm.tsx
 │   ├── MessageInput.tsx
 │   ├── MessageList.tsx
-│   └── NewConversationModal.tsx
+│   ├── Modal.tsx
+│   ├── ProfileModal.tsx
+│   ├── GroupMembersModal.tsx
+│   └── UserSearchModal.tsx
 ├── hooks/
 │   └── useSocket.ts
+├── lib/
+│   └── utils.ts
 ├── store/
 │   ├── api/
 │   │   └── chatApi.ts
@@ -101,6 +108,7 @@ src/
 │   └── index.ts
 ├── types/
 │   └── index.ts
+└── app_config.ts
 ```
 
 ## API Documentation
@@ -118,11 +126,7 @@ NEXT_PUBLIC_SOCKET_URL=https://frontend-task-chatapp.onrender.com
 
 ## Deployment
 
-This app is ready to deploy on:
-
-- Vercel (recommended)
-- Netlify
-- Any platform supporting Next.js
+This app is deployed on Vercel.
 
 ## Part 3: Thought Process Write-up
 
@@ -167,11 +171,13 @@ I wrote the core application logic, component structure, and design decisions my
 
 1. **API Documentation not accessible:** The Swagger UI was served but the OpenAPI spec wasn't directly accessible. I used systematic HTTP probing (curl requests with various paths and methods) to discover all available endpoints, their required parameters, and response shapes.
 
-2. **Group conversation API limitations:** The backend API's `POST /api/conversations` endpoint always returns a direct conversation regardless of the `type` parameter, and ignores additional fields like `name` and `participantIds`. I designed the UI to support both direct and group conversations, and implemented a workaround where the UI allows selecting the conversation type and entering group details. The conversation list correctly displays the `type` field from the API response.
+2. **Group conversation API limitations:** The backend API's `POST /api/conversations` endpoint always returns a direct conversation regardless of the `type` parameter, and ignores additional fields like `name` and `participantIds`. I discovered a separate `POST /api/conversations/group` endpoint that accepts `name` and `participantIds` for proper group creation. The UI now uses the correct endpoint for group conversations.
 
 3. **Socket.IO event discovery:** Without access to the backend code, I had to infer the Socket.IO event names. I implemented the connection with standard event patterns and made the `useSocket` hook flexible enough to handle different event names if needed.
 
 4. **Real-time message deduplication:** Since messages can arrive both via API response and via Socket.IO, I implemented a deduplication mechanism using a Map of incoming messages that are consumed when the user views the conversation.
+
+5. **Avatar consistency:** In group conversations, message avatars were showing fallback initials instead of actual user names. I fixed this by populating the participants map from `conversation.participants[]` for group chats.
 
 ### What I'd Improve With More Time
 
@@ -195,14 +201,14 @@ While building this, I was reminded of a trip to Madagascar where connectivity w
 
 ## Live Demo
 
-- **Landing Page:** [https://chat-app-frontend.vercel.app](https://chat-app-frontend.vercel.app)
-- **Chat Application:** [https://chat-app-frontend.vercel.app/chat/login](https://chat-app-frontend.vercel.app/chat/login)
+- **Landing Page:** [https://chat-with-me-web.vercel.app](https://chat-with-me-web.vercel.app)
+- **Chat Application:** [https://chat-with-me-web.vercel.app/chat/login](https://chat-with-me-web.vercel.app/chat/login)
 
 ## Submission
 
-- **GitHub Repository:** [https://github.com/yourusername/chat-app](https://github.com/yourusername/chat-app)
-- **Live Demo (Part 1):** [https://chat-app-frontend.vercel.app/chat/login](https://chat-app-frontend.vercel.app/chat/login)
-- **Live Demo (Part 2):** [https://chat-app-frontend.vercel.app](https://chat-app-frontend.vercel.app)
+- **GitHub Repository:** [https://github.com/majharul-web/chat-app](https://github.com/majharul-web/chat-app)
+- **Live Demo (Part 1):** [https://chat-with-me-web.vercel.app/chat/login](https://chat-with-me-web.vercel.app/chat/login)
+- **Live Demo (Part 2):** [https://chat-with-me-web.vercel.app](https://chat-with-me-web.vercel.app)
 
 ---
 

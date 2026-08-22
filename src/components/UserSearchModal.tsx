@@ -142,7 +142,7 @@ export default function UserSearchModal({
         <button
           type='button'
           onClick={() => onConvTypeChange("direct")}
-          className={`flex-1 py-2 px-4 rounded-md border transition ${
+            className={`flex-1 py-2 px-4 rounded-md border transition cursor-pointer ${
             convType === "direct"
               ? "bg-primary border-primary text-white"
               : "border-gray-300 hover:bg-gray-50"
@@ -153,7 +153,7 @@ export default function UserSearchModal({
         <button
           type='button'
           onClick={() => onConvTypeChange("group")}
-          className={`flex-1 py-2 px-4 rounded-md border transition ${
+            className={`flex-1 py-2 px-4 rounded-md border transition cursor-pointer ${
             convType === "group" ? "bg-primary border-primary text-white" : "border-gray-300 hover:bg-gray-50"
           }`}
         >
@@ -214,7 +214,7 @@ export default function UserSearchModal({
               <button
                 type='button'
                 onClick={() => onSelect(selectedUsers.filter((u) => u._id !== user._id))}
-                className='ml-0.5 text-gray-500 hover:text-gray-700'
+                className='ml-0.5 text-gray-500 hover:text-gray-700 cursor-pointer'
               >
                 <svg className='w-3 h-3' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                   <path
@@ -278,7 +278,7 @@ export default function UserSearchModal({
         <button
           type='button'
           onClick={onClose}
-          className='px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition'
+          className='px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition cursor-pointer'
         >
           Cancel
         </button>
@@ -286,7 +286,7 @@ export default function UserSearchModal({
           type='button'
           onClick={handleSubmit}
           disabled={!canSubmit || isSubmitting}
-          className='px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark disabled:bg-gray-300 disabled:cursor-not-allowed transition'
+          className='px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark disabled:bg-gray-300 disabled:cursor-not-allowed transition cursor-pointer'
         >
           {isSubmitting ? "Creating..." : submitLabel}
         </button>

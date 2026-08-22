@@ -4,9 +4,12 @@ export default function Home() {
   return (
     <div className='min-h-screen bg-background'>
       <nav className='flex items-center justify-between px-6 py-4 max-w-7xl mx-auto'>
-        <div className='text-2xl font-bold text-gray-900'>ChatWithMe</div>
+        <div className='text-2xl font-bold text-primary'>ChatWithMe</div>
         <div className='flex gap-4 items-center'>
-          <a href='/chat/login' className='text-gray-600 hover:text-gray-900 font-medium transition'>
+          <a
+            href='/chat/login'
+            className='text-gray-600 hover:text-gray-900 hover:border-b-2 hover:border-primary font-medium transition'
+          >
             Log In
           </a>
           <a
@@ -180,7 +183,7 @@ export default function Home() {
 
       <footer className='bg-white border-t border-gray-200 py-8'>
         <div className='max-w-7xl mx-auto px-6 text-center text-gray-500 text-sm'>
-          © 2026 ChatWithMe. All rights reserved.
+          © 2026 <span className='text-primary'>ChatWithMe</span>. All rights reserved.
         </div>
       </footer>
     </div>
