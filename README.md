@@ -189,15 +189,13 @@ I wrote the core application logic, component structure, and design decisions my
 
 4. **Message status indicators:** Add read receipts and delivery status for messages.
 
-5. **Search improvements:** The current search requires exact user IDs. I'd improve it to search by name and phone number directly in the UI.
+5. **Mobile optimization:** Add a mobile-first responsive design with a proper back navigation pattern for the conversation list.
 
-6. **Mobile optimization:** Add a mobile-first responsive design with a proper back navigation pattern for the conversation list.
+6. **Testing:** Add unit tests and integration tests for the API utilities and components.
 
-7. **Testing:** Add unit tests and integration tests for the API utilities and components.
+7. **Accessibility:** Improve keyboard navigation, screen reader support, and ARIA labels.
 
-8. **Accessibility:** Improve keyboard navigation, screen reader support, and ARIA labels.
-
-While building this, I was reminded of a trip to Madagascar where connectivity was spotty — that experience reinforced how important it is to have an app that gracefully handles network issues, auto-reconnects, and provides clear feedback to users when the connection drops.
+While building this, I was dealing with significant back pain that made it impossible to sit at a desk, so most of this project was completed from bed with my laptop. On top of that, frequent electricity outages here in Bangladesh added extra pressure to work in short, unpredictable windows. Between the two, I made sure to save progress frequently and structure my work in small, resumable chunks — and it also reinforced how important it is for the app itself to gracefully handle network issues, auto-reconnect, and give users clear feedback when the connection drops.
 
 ## Live Demo
 

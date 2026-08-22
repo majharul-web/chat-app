@@ -46,13 +46,13 @@ export default function UserSearchModal({
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (!isOpen) {
+    return () => {
       setQuery("");
       setResults([]);
       setIsSearching(false);
       setGroupNameError("");
-    }
-  }, [isOpen]);
+    };
+  }, []);
 
   useEffect(() => {
     return () => {
