@@ -60,6 +60,7 @@ export default function ChatPanel() {
   const messagePollRef = useRef<NodeJS.Timeout | null>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const selectedConversationIdRef = useRef<string | null>(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [showGroupMembers, setShowGroupMembers] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -233,6 +234,19 @@ export default function ChatPanel() {
     }
   }, [searchResultsData, user, dispatch]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        dispatch(setShowSearch(false));
+      }
+    };
+
+    if (showSearch) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showSearch, dispatch]);
+
   const handleUserClick = async (user: User) => {
     dispatch(setShowSearch(false));
 
@@ -343,7 +357,7 @@ export default function ChatPanel() {
               </button>
             )}
 
-            <div className='relative mt-2'>
+            <div className='relative mt-2' ref={searchContainerRef}>
               <input
                 type='text'
                 placeholder='Search or start new chat'
@@ -376,15 +390,22 @@ export default function ChatPanel() {
             </div>
 
             {showSearch && searchResults.length > 0 && (
-              <div className='absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto'>
+              <div className='absolute z-10 w-[300px] mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-[400px] overflow-y-auto'>
                 {searchResults.map((user) => (
                   <button
                     key={user._id}
                     onClick={() => handleUserClick(user)}
-                    className='w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition'
+                    className='w-full px-3 py-2.5 text-left hover:bg-gray-50 transition flex items-center gap-3'
                   >
-                    <div className='font-medium text-gray-900'>{user.name}</div>
-                    <div className='text-sm text-gray-500'>{user.phone}</div>
+                    <div
+                      className={`w-9 h-9 rounded-full ${getAvatarColor(user._id)} flex items-center justify-center text-white text-sm font-semibold flex-shrink-0`}
+                    >
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className='flex-1 min-w-0'>
+                      <div className='font-medium text-gray-900 text-sm truncate'>{user.name}</div>
+                      <div className='text-xs text-gray-500 truncate'>{user.phone}</div>
+                    </div>
                   </button>
                 ))}
               </div>
@@ -421,7 +442,9 @@ export default function ChatPanel() {
                   <div className='flex items-start gap-3'>
                     <div
                       className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0 ${
-                        conv.type === "group" ? "bg-purple-500" : "bg-blue-500"
+                        conv.type === "group"
+                          ? "bg-purple-500"
+                          : getAvatarColor(conv.participant?._id || conv._id)
                       }`}
                     >
                       {conv.type === "group" ? (

@@ -1,7 +1,6 @@
+import { API_BASE } from "@/app_config";
 import { Conversation, Message, User } from "@/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://frontend-task-chatapp.onrender.com";
 
 export const chatApi = createApi({
   reducerPath: "chatApi",
@@ -59,10 +58,7 @@ export const chatApi = createApi({
       invalidatesTags: ["Conversation"],
     }),
 
-    createGroupConversation: builder.mutation<
-      Conversation,
-      { name: string; participantIds: string[] }
-    >({
+    createGroupConversation: builder.mutation<Conversation, { name: string; participantIds: string[] }>({
       query: (body) => ({
         url: "/api/conversations/group",
         method: "POST",

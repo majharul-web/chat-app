@@ -1,10 +1,9 @@
 "use client";
 
+import { SOCKET_URL } from "@/app_config";
 import { Message } from "@/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
-
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || "https://frontend-task-chatapp.onrender.com";
 
 export function useSocket(token: string | null) {
   const socketRef = useRef<Socket | null>(null);
