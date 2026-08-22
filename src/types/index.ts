@@ -23,7 +23,10 @@ export interface Conversation {
   };
   updatedAt: string;
   participant?: User;
-  participants?: string[];
+  participants?: User[];
+  name?: string;
+  createdBy?: string;
+  admins?: string[];
 }
 
 export interface ConversationWithDetails extends Conversation {

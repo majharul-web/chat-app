@@ -40,7 +40,7 @@ export function formatConversationTime(dateString: string): string {
 
 export const getConversationTitle = (conv: Conversation) => {
   if (conv.type === "group") {
-    return `Group ${conv._id.slice(-4)}`;
+    return conv.name || `Group ${conv._id.slice(-4)}`;
   }
   if (conv.participant) {
     return conv.participant.name || conv.participant.phone;

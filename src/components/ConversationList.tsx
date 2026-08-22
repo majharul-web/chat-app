@@ -1,8 +1,8 @@
 "use client";
 
-import { formatConversationTime } from "@/lib/utils";
-import { Conversation, User } from "@/types";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Conversation, User } from "@/types";
+import { formatConversationTime, getAvatarColor } from "@/lib/utils";
 
 interface ConversationListProps {
   conversations: Conversation[];
@@ -188,27 +188,43 @@ export default function ConversationList({
             <button
               key={conv._id}
               onClick={() => onSelect(conv)}
-              className={`w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 transition ${
+              className={`group w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 transition ${
                 selectedId === conv._id ? "bg-blue-50" : ""
               }`}
             >
               <div className='flex items-start gap-3'>
-                <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0 ${
-                    conv.type === "group" ? "bg-purple-500" : "bg-blue-500"
-                  }`}
-                >
-                  {conv.type === "group" ? (
-                    <svg className='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth={2}
-                        d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'
-                      />
-                    </svg>
-                  ) : (
-                    <span>{getConversationTitle(conv).charAt(0).toUpperCase()}</span>
+                <div className='relative flex-shrink-0'>
+                  <div
+                    className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold ${
+                      conv.type === "group"
+                        ? "bg-purple-500"
+                        : getAvatarColor(conv.participant?._id || conv._id)
+                    }`}
+                  >
+                    {conv.type === "group" ? (
+                      <svg className='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'
+                        />
+                      </svg>
+                    ) : (
+                      <span>{getConversationTitle(conv).charAt(0).toUpperCase()}</span>
+                    )}
+                  </div>
+                  {conv.type === "group" && conv.participants && conv.participants.length > 0 && (
+                    <div className='absolute bottom-full left-0 mb-2 hidden group-hover:block z-50'>
+                      <div className='bg-gray-900 text-white text-xs rounded-lg py-2 px-3 shadow-xl max-w-[200px]'>
+                        <div className='font-semibold mb-1 border-b border-gray-700 pb-1'>Group Members</div>
+                        {conv.participants.map((p) => (
+                          <div key={p._id} className='truncate'>
+                            {p.name || p.phone}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   )}
                 </div>
                 <div className='flex-1 min-w-0'>

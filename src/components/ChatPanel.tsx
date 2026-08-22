@@ -3,7 +3,9 @@
 import MessageInput from "@/components/MessageInput";
 import MessageList from "@/components/MessageList";
 import UserSearchModal from "@/components/UserSearchModal";
+import GroupMembersModal from "@/components/GroupMembersModal";
 import { useSocket } from "@/hooks/useSocket";
+import { getAvatarColor } from "@/lib/utils";
 import { formatTime, getConversationSubtitle, getConversationTitle } from "@/lib/utils";
 import {
   useCreateConversationMutation,
@@ -59,6 +61,7 @@ export default function ChatPanel() {
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const selectedConversationIdRef = useRef<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showGroupMembers, setShowGroupMembers] = useState(false);
 
   const { isConnected, joinConversation, leaveConversation, consumeMessage } = useSocket(token);
 
@@ -267,17 +270,22 @@ export default function ChatPanel() {
 
   const participants = useMemo(() => {
     if (!selectedConversation) return {};
-    const participants: Record<string, { name?: string; phone?: string }> = {};
+    const map: Record<string, { name?: string; phone?: string }> = {};
     if (user) {
-      participants[user._id] = { name: "You", phone: "" };
+      map[user._id] = { name: "You", phone: "" };
     }
     if (selectedConversation.participant) {
-      participants[selectedConversation.participant._id] = {
+      map[selectedConversation.participant._id] = {
         name: selectedConversation.participant.name,
         phone: selectedConversation.participant.phone,
       };
     }
-    return participants;
+    if (selectedConversation.participants) {
+      selectedConversation.participants.forEach((p) => {
+        map[p._id] = { name: p.name, phone: p.phone };
+      });
+    }
+    return map;
   }, [selectedConversation, user]);
 
   return (
@@ -435,34 +443,43 @@ export default function ChatPanel() {
           <>
             <div className='bg-background border-b border-gray-200 px-6 py-3'>
               <div className='flex items-center gap-3'>
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${
-                    selectedConversation.type === "group" ? "bg-purple-500" : "bg-blue-500"
-                  }`}
-                >
-                  {selectedConversation.type === "group" ? (
-                    <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth={2}
-                        d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'
-                      />
-                    </svg>
-                  ) : (
-                    <span>{getConversationTitle(selectedConversation).charAt(0).toUpperCase()}</span>
-                  )}
+                <div className='flex-shrink-0'>
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${
+                      selectedConversation.type === "group" ? "bg-purple-500" : getAvatarColor(selectedConversation.participant?._id || selectedConversation._id)
+                    }`}
+                  >
+                    {selectedConversation.type === "group" ? (
+                      <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'
+                        />
+                      </svg>
+                    ) : (
+                      <span>{getConversationTitle(selectedConversation).charAt(0).toUpperCase()}</span>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <h2 className='text-base font-semibold text-gray-900'>
                     {selectedConversation.type === "group"
-                      ? `Group ${selectedConversation._id.slice(-4)}`
+                      ? selectedConversation.name || `Group ${selectedConversation._id.slice(-4)}`
                       : selectedConversation.participant?.name || "Conversation"}
                   </h2>
                   <p className='text-xs text-gray-500'>
-                    {selectedConversation.type === "group"
-                      ? "Group conversation"
-                      : selectedConversation.participant?.phone || ""}
+                    {selectedConversation.type === "group" ? (
+                      <button
+                        onClick={() => setShowGroupMembers(true)}
+                        className='hover:text-primary transition'
+                      >
+                        {selectedConversation.participants?.length || 0} participants
+                      </button>
+                    ) : (
+                      selectedConversation.participant?.phone || ""
+                    )}
                   </p>
                 </div>
               </div>
@@ -521,6 +538,15 @@ export default function ChatPanel() {
           submitLabel={newConvType === "direct" ? "Start Chat" : "Create Group"}
           onSubmit={handleCreateConversation}
           isSubmitting={isCreating}
+        />
+      )}
+
+      {showGroupMembers && selectedConversation?.type === "group" && (
+        <GroupMembersModal
+          isOpen={showGroupMembers}
+          onClose={() => setShowGroupMembers(false)}
+          members={selectedConversation.participants || []}
+          groupName={selectedConversation.name}
         />
       )}
 
