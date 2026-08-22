@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Conversation, Message, User } from '@/types';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Conversation, Message, User } from "@/types";
 
 interface ChatState {
   conversations: Conversation[];
@@ -12,7 +12,7 @@ interface ChatState {
   isSearching: boolean;
   showSearch: boolean;
   showNewConversation: boolean;
-  newConvType: 'direct' | 'group';
+  newConvType: "direct" | "group";
   modalSelectedUsers: User[];
   groupName: string;
   isCreating: boolean;
@@ -30,15 +30,15 @@ const initialState: ChatState = {
   isSearching: false,
   showSearch: false,
   showNewConversation: false,
-  newConvType: 'direct',
+  newConvType: "direct",
   modalSelectedUsers: [],
-  groupName: '',
+  groupName: "",
   isCreating: false,
   isConnected: false,
 };
 
 const chatSlice = createSlice({
-  name: 'chat',
+  name: "chat",
   initialState,
   reducers: {
     setConversations: (state, action: PayloadAction<Conversation[]>) => {
@@ -47,15 +47,28 @@ const chatSlice = createSlice({
     setSelectedConversation: (state, action: PayloadAction<Conversation | null>) => {
       state.selectedConversation = action.payload;
     },
-    setMessages: (state, action: PayloadAction<{ conversationId: string; messages: Message[]; hasMore: boolean; lastMessageId?: string }>) => {
+    setMessages: (
+      state,
+      action: PayloadAction<{
+        conversationId: string;
+        messages: Message[];
+        hasMore: boolean;
+        lastMessageId?: string;
+      }>,
+    ) => {
       const { conversationId, messages, hasMore, lastMessageId } = action.payload;
       state.messages[conversationId] = { messages, hasMore, lastMessageId };
     },
-    appendMessages: (state, action: PayloadAction<{ conversationId: string; messages: Message[]; lastMessageId?: string }>) => {
+    appendMessages: (
+      state,
+      action: PayloadAction<{ conversationId: string; messages: Message[]; lastMessageId?: string }>,
+    ) => {
       const { conversationId, messages, lastMessageId } = action.payload;
       const existing = state.messages[conversationId] || { messages: [], hasMore: false };
+      const existingIds = new Set(existing.messages.map((m) => m._id));
+      const deduped = messages.filter((m) => !existingIds.has(m._id));
       state.messages[conversationId] = {
-        messages: [...existing.messages, ...messages],
+        messages: [...existing.messages, ...deduped],
         hasMore: existing.hasMore,
         lastMessageId: lastMessageId || existing.lastMessageId,
       };
@@ -84,7 +97,7 @@ const chatSlice = createSlice({
     setShowNewConversation: (state, action: PayloadAction<boolean>) => {
       state.showNewConversation = action.payload;
     },
-    setNewConvType: (state, action: PayloadAction<'direct' | 'group'>) => {
+    setNewConvType: (state, action: PayloadAction<"direct" | "group">) => {
       state.newConvType = action.payload;
     },
     setModalSelectedUsers: (state, action: PayloadAction<User[]>) => {
@@ -108,7 +121,7 @@ const chatSlice = createSlice({
       state.showSearch = false;
       state.showNewConversation = false;
       state.modalSelectedUsers = [];
-      state.groupName = '';
+      state.groupName = "";
       state.isCreating = false;
     },
   },

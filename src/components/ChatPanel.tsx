@@ -4,6 +4,7 @@ import MessageInput from "@/components/MessageInput";
 import MessageList from "@/components/MessageList";
 import UserSearchModal from "@/components/UserSearchModal";
 import { useSocket } from "@/hooks/useSocket";
+import { formatTime, getConversationSubtitle, getConversationTitle } from "@/lib/utils";
 import {
   useCreateConversationMutation,
   useGetConversationsQuery,
@@ -61,7 +62,7 @@ export default function ChatPanel() {
   const { isConnected, joinConversation, leaveConversation, consumeMessage } = useSocket(token);
 
   const { data: conversationsData, isLoading: isLoadingConversations } = useGetConversationsQuery(undefined, {
-    pollingInterval: 5000,
+    // pollingInterval: 5000,
     refetchOnFocus: true,
     refetchOnReconnect: true,
   });
@@ -76,7 +77,7 @@ export default function ChatPanel() {
     selectedConversation?._id || "",
     {
       skip: !selectedConversation,
-      pollingInterval: 2000,
+      // pollingInterval: 2000,
       refetchOnFocus: true,
       refetchOnReconnect: true,
     },
@@ -174,7 +175,7 @@ export default function ChatPanel() {
     dispatch(clearError());
 
     try {
-      const userId = newConvType === 'direct' ? modalSelectedUsers[0]._id : modalSelectedUsers[0]._id;
+      const userId = newConvType === "direct" ? modalSelectedUsers[0]._id : modalSelectedUsers[0]._id;
       const conversation = await createConversationMutation({
         userId,
         type: newConvType,
@@ -250,40 +251,6 @@ export default function ChatPanel() {
       }
     };
   }, []);
-
-  const getConversationTitle = (conv: Conversation) => {
-    if (conv.type === "group") {
-      return `Group ${conv._id.slice(-4)}`;
-    }
-    if (conv.participant) {
-      return conv.participant.name || conv.participant.phone;
-    }
-    return "Unknown";
-  };
-
-  const getConversationSubtitle = (conv: Conversation) => {
-    if (conv.lastMessage) {
-      return conv.lastMessage.text || "";
-    }
-    return "No messages yet";
-  };
-
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-    if (days === 0) {
-      return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    } else if (days === 1) {
-      return "Yesterday";
-    } else if (days < 7) {
-      return date.toLocaleDateString([], { weekday: "short" });
-    } else {
-      return date.toLocaleDateString([], { month: "short", day: "numeric" });
-    }
-  };
 
   const currentMessages = selectedConversation ? messages[selectedConversation._id]?.messages || [] : [];
   const hasMore = selectedConversation ? messages[selectedConversation._id]?.hasMore || false : false;
@@ -541,7 +508,7 @@ export default function ChatPanel() {
           groupName={groupName}
           onGroupNameChange={(name) => dispatch(setGroupName(name))}
           title='New Conversation'
-          submitLabel={newConvType === 'direct' ? 'Start Chat' : 'Create Group'}
+          submitLabel={newConvType === "direct" ? "Start Chat" : "Create Group"}
           onSubmit={handleCreateConversation}
           isSubmitting={isCreating}
         />
