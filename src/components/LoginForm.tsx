@@ -11,9 +11,39 @@ interface LoginFormProps {
 export default function LoginForm({ onLogin, isLoading, error }: LoginFormProps) {
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [nameError, setNameError] = useState("");
+
+  const validate = () => {
+    let valid = true;
+    setPhoneError("");
+    setNameError("");
+
+    if (!phone.trim()) {
+      setPhoneError("Phone number is required");
+      valid = false;
+    } else if (!/^\d+$/.test(phone.trim())) {
+      setPhoneError("Phone number must contain only digits");
+      valid = false;
+    } else if (phone.trim().length < 10) {
+      setPhoneError("Phone number must be at least 10 digits");
+      valid = false;
+    }
+
+    if (!name.trim()) {
+      setNameError("Name is required");
+      valid = false;
+    } else if (name.trim().length < 2) {
+      setNameError("Name must be at least 2 characters");
+      valid = false;
+    }
+
+    return valid;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     onLogin(phone, name);
   };
 
@@ -49,12 +79,14 @@ export default function LoginForm({ onLogin, isLoading, error }: LoginFormProps)
             <input
               id='phone'
               type='tel'
-              required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className='w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring focus:ring-primary focus:border-transparent outline-none transition'
+              className={`w-full px-4 py-2.5 border rounded-lg focus:ring focus:ring-primary focus:border-transparent outline-none transition ${
+                phoneError ? "border-red-300 bg-red-50" : "border-gray-300"
+              }`}
               placeholder='Enter your phone number'
             />
+            {phoneError && <p className='mt-1 text-xs text-red-600'>{phoneError}</p>}
           </div>
 
           <div>
@@ -64,12 +96,14 @@ export default function LoginForm({ onLogin, isLoading, error }: LoginFormProps)
             <input
               id='name'
               type='text'
-              required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className='w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring focus:ring-primary focus:border-transparent outline-none transition'
+              className={`w-full px-4 py-2.5 border rounded-lg focus:ring focus:ring-primary focus:border-transparent outline-none transition ${
+                nameError ? "border-red-300 bg-red-50" : "border-gray-300"
+              }`}
               placeholder='Enter your name'
             />
+            {nameError && <p className='mt-1 text-xs text-red-600'>{nameError}</p>}
           </div>
 
           <button

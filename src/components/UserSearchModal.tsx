@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { User } from "@/types";
-import { getAvatarColor } from "@/lib/utils";
-import Modal from "@/components/Modal";
 import { API_BASE } from "@/app_config";
+import Modal from "@/components/Modal";
+import { getAvatarColor } from "@/lib/utils";
+import { User } from "@/types";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 interface UserSearchModalProps {
   isOpen: boolean;
@@ -42,6 +42,7 @@ export default function UserSearchModal({
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<User[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [groupNameError, setGroupNameError] = useState("");
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -49,6 +50,7 @@ export default function UserSearchModal({
       setQuery("");
       setResults([]);
       setIsSearching(false);
+      setGroupNameError("");
     }
   }, [isOpen]);
 
@@ -110,7 +112,29 @@ export default function UserSearchModal({
   };
 
   const isSelected = (user: User) => selectedUsers.some((u) => u._id === user._id);
-  const canSubmit = convType === "direct" ? selectedUsers.length === 1 : selectedUsers.length > 0;
+
+  const validate = () => {
+    let valid = true;
+    setGroupNameError("");
+
+    if (convType === "group" && !groupName.trim()) {
+      setGroupNameError("Group name is required");
+      valid = false;
+    }
+
+    if (selectedUsers.length === 0) {
+      valid = false;
+    }
+
+    return valid;
+  };
+
+  const canSubmit = selectedUsers.length > 0 && (convType !== "group" || groupName.trim().length > 0);
+
+  const handleSubmit = () => {
+    if (!validate()) return;
+    if (onSubmit) onSubmit();
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title} size='md'>
@@ -143,10 +167,16 @@ export default function UserSearchModal({
           <input
             type='text'
             value={groupName}
-            onChange={(e) => onGroupNameChange(e.target.value)}
-            className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-primary outline-none'
+            onChange={(e) => {
+              onGroupNameChange(e.target.value);
+              if (groupNameError) setGroupNameError("");
+            }}
+            className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-primary outline-none transition ${
+              groupNameError ? "border-red-300 bg-red-50" : "border-gray-300"
+            }`}
             placeholder='Enter group name'
           />
+          {groupNameError && <p className='mt-1 text-xs text-red-600'>{groupNameError}</p>}
         </div>
       )}
 
@@ -254,9 +284,7 @@ export default function UserSearchModal({
         </button>
         <button
           type='button'
-          onClick={() => {
-            if (onSubmit) onSubmit();
-          }}
+          onClick={handleSubmit}
           disabled={!canSubmit || isSubmitting}
           className='px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark disabled:bg-gray-300 disabled:cursor-not-allowed transition'
         >
