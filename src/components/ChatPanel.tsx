@@ -7,6 +7,7 @@ import { useSocket } from "@/hooks/useSocket";
 import { formatTime, getConversationSubtitle, getConversationTitle } from "@/lib/utils";
 import {
   useCreateConversationMutation,
+  useCreateGroupConversationMutation,
   useGetConversationsQuery,
   useGetMessagesQuery,
   useSearchUsersQuery,
@@ -141,6 +142,7 @@ export default function ChatPanel() {
 
   const [sendMessageMutation] = useSendMessageMutation();
   const [createConversationMutation] = useCreateConversationMutation();
+  const [createGroupConversationMutation] = useCreateGroupConversationMutation();
 
   const handleSelectConversation = (conv: Conversation) => {
     dispatch(setSelectedConversation(conv));
@@ -175,12 +177,20 @@ export default function ChatPanel() {
     dispatch(clearError());
 
     try {
-      const userId = newConvType === "direct" ? modalSelectedUsers[0]._id : modalSelectedUsers[0]._id;
-      const conversation = await createConversationMutation({
-        userId,
-        type: newConvType,
-        name: newConvType === "group" ? groupName : undefined,
-      }).unwrap();
+      let conversation: Conversation;
+      if (newConvType === "direct") {
+        const result = await createConversationMutation({
+          userId: modalSelectedUsers[0]._id,
+          type: "direct",
+        }).unwrap();
+        conversation = result;
+      } else {
+        const result = await createGroupConversationMutation({
+          name: groupName,
+          participantIds: modalSelectedUsers.map((u) => u._id),
+        }).unwrap();
+        conversation = result;
+      }
 
       dispatch(setConversations([conversation, ...conversations]));
       dispatch(setSelectedConversation(conversation));

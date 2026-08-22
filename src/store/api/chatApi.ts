@@ -59,6 +59,18 @@ export const chatApi = createApi({
       invalidatesTags: ["Conversation"],
     }),
 
+    createGroupConversation: builder.mutation<
+      Conversation,
+      { name: string; participantIds: string[] }
+    >({
+      query: (body) => ({
+        url: "/api/conversations/group",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Conversation"],
+    }),
+
     getMessages: builder.query<{ messages: Message[]; hasMore: boolean }, string>({
       query: (conversationId) => `/api/conversations/${conversationId}/messages`,
       providesTags: ["Message"],
@@ -81,6 +93,7 @@ export const {
   useSearchUsersQuery,
   useGetConversationsQuery,
   useCreateConversationMutation,
+  useCreateGroupConversationMutation,
   useGetMessagesQuery,
   useSendMessageMutation,
 } = chatApi;

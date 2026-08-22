@@ -165,7 +165,7 @@ Authorization: Bearer <token>
 
 **Endpoint:** `POST /api/conversations`
 
-Creates a new conversation (direct or group).
+Creates a new direct conversation.
 
 **Headers:**
 
@@ -179,8 +179,43 @@ Content-Type: application/json
 ```json
 {
   "userId": "string (required)",
-  "type": "direct | group (required)",
-  "name": "string (optional, for groups)"
+  "type": "direct (required)"
+}
+```
+
+**Response 201 Created:**
+
+```json
+{
+  "_id": "string",
+  "participants": ["string"],
+  "createdAt": "string (ISO 8601)"
+}
+```
+
+---
+
+### 5a. Create Group Conversation
+
+**Endpoint:** `POST /api/conversations/group`
+
+Creates a new group conversation. The creator becomes an admin.
+
+**Headers:**
+
+```
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+**Request Body:**
+
+```json
+{
+  "name": "string (required)",
+  "participantIds": [
+    "string"
+  ]
 }
 ```
 
