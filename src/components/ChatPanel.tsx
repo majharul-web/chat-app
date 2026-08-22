@@ -1,12 +1,12 @@
 "use client";
 
+import GroupMembersModal from "@/components/GroupMembersModal";
 import MessageInput from "@/components/MessageInput";
 import MessageList from "@/components/MessageList";
+import ProfileModal from "@/components/ProfileModal";
 import UserSearchModal from "@/components/UserSearchModal";
-import GroupMembersModal from "@/components/GroupMembersModal";
 import { useSocket } from "@/hooks/useSocket";
-import { getAvatarColor } from "@/lib/utils";
-import { formatTime, getConversationSubtitle, getConversationTitle } from "@/lib/utils";
+import { formatTime, getAvatarColor, getConversationSubtitle, getConversationTitle } from "@/lib/utils";
 import {
   useCreateConversationMutation,
   useCreateGroupConversationMutation,
@@ -62,6 +62,7 @@ export default function ChatPanel() {
   const selectedConversationIdRef = useRef<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [showGroupMembers, setShowGroupMembers] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const { isConnected, joinConversation, leaveConversation, consumeMessage } = useSocket(token);
 
@@ -325,7 +326,24 @@ export default function ChatPanel() {
               </div>
             </div>
 
-            <div className='relative'>
+            {user && (
+              <button
+                onClick={() => setIsProfileOpen(true)}
+                className='w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/20 transition text-left'
+              >
+                <div
+                  className={`w-10 h-10 rounded-full ${getAvatarColor(user._id)} flex items-center justify-center text-white font-semibold flex-shrink-0`}
+                >
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+                <div className='flex-1 min-w-0'>
+                  <div className='font-medium truncate'>{user.name}</div>
+                  <div className='text-xs text-white/80 truncate'>{user.phone}</div>
+                </div>
+              </button>
+            )}
+
+            <div className='relative mt-2'>
               <input
                 type='text'
                 placeholder='Search or start new chat'
@@ -446,7 +464,9 @@ export default function ChatPanel() {
                 <div className='flex-shrink-0'>
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${
-                      selectedConversation.type === "group" ? "bg-purple-500" : getAvatarColor(selectedConversation.participant?._id || selectedConversation._id)
+                      selectedConversation.type === "group"
+                        ? "bg-purple-500"
+                        : getAvatarColor(selectedConversation.participant?._id || selectedConversation._id)
                     }`}
                   >
                     {selectedConversation.type === "group" ? (
@@ -548,6 +568,10 @@ export default function ChatPanel() {
           members={selectedConversation.participants || []}
           groupName={selectedConversation.name}
         />
+      )}
+
+      {isProfileOpen && user && (
+        <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} user={user} />
       )}
 
       {error && (
